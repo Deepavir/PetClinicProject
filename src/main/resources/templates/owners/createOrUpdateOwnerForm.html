@@ -1,0 +1,37 @@
+<html xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
+
+<body>
+
+  <h2>Owner</h2>
+  <form th:object="${owner}" class="form-horizontal" id="add-owner-form" method="post" enctype="multipart/form-data">
+    <div class="form-group has-feedback">
+      <input
+        th:replace="~{fragments/inputField :: input ('First Name', 'firstName', 'text')}" />
+      <input
+        th:replace="~{fragments/inputField :: input ('Last Name', 'lastName', 'text')}" />
+      <input
+        th:replace="~{fragments/inputField :: input ('Address', 'address', 'text')}" />
+      <input
+        th:replace="~{fragments/inputField :: input ('City', 'city', 'text')}" />
+      <input
+        th:replace="~{fragments/inputField :: input ('Telephone', 'telephone', 'text')}" />
+         <input
+        th:replace="~{fragments/inputField :: input ('Email', 'email', 'text')}" />
+          <input
+       th:replace="~{fragments/inputField :: input ('Images', 'images', 'file')}" />
+		
+		<div class="form-group">
+            <input type="file" name="imagess" accept="image/png"  class="form-control-file" enctype="multipart/form-data">
+        </div>
+
+<div class="col-sm-offset-2 col-sm-10">
+        <button
+          th:with="text=${owner['new']} ? 'Add Owner' : 'Update Owner'"
+          class="btn btn-primary" type="submit" th:text="${text}">Ad
+          Owner</button>
+      </div>
+    </div>
+  </form>
+</body>
+</html>
