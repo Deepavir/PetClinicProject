@@ -88,6 +88,8 @@ public interface OwnerRepository extends Repository<Owner, Integer> {
      @Query("SELECT  owner FROM Owner owner left join  owner.pets order By firstName")
 	Page<Owner> findByfirstName(Page<Owner> sortledlist, Pageable pageable);
 
+	Owner findByEmail(String email);
+
 	//Page<Owner> findByfirstName(List<Owner> sortedlist, Pageable pageable);
      
    // Page<Owner> findByfirstNameOrderBycreatedDate(String firstname,Pageable pageable);

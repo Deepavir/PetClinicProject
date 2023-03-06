@@ -85,6 +85,8 @@ class OwnerController {
 	private ObjectMapper mapper;
 	@Autowired
 	private ContactRepository contactrepo;
+	
+	
 
 	public OwnerController(OwnerRepository clinicService) {
 		this.owners = clinicService;
@@ -104,13 +106,17 @@ class OwnerController {
 	public Optional<ContactDetail> findContact(@PathVariable(name = "contactId", required = false) Integer contactId) {
 		return contactId == null ? Optional.of(new ContactDetail()) : this.contactrepo.findById(contactId);
 	}
+	/*@ModelAttribute("user")
+	public Optional<ContactDetail> findUser(@PathVariable(name = "id", required = false) Integer id) {
+		return id == null ? Optional.of(new ContactDetail()) : this.userrepo.findById(contactId);
+	}*/
 /*
  * This method used to get page with owners detail field view.
  * @return creation form 
  * 
  * 
  */
-	@GetMapping("/owners/new")
+	@GetMapping("/owners/new/{id}")
 	public String initCreationForm(Map<String, Object> model) {
 		log.info("initCreationForm method========owner creation form initialized");
 		Owner owner = new Owner();
@@ -132,11 +138,12 @@ class OwnerController {
 	
 	
 	
-	@PostMapping("/owners/new")
+	@PostMapping("/owners/new/{id}")
 	public String processCreationForm(@Valid @RequestParam("firstName") String firstname,
 			@RequestParam("lastName") String lastname, @RequestParam("address") String address,
 			@RequestParam("city") String city, @RequestParam("telephone") String telephone,
-			@RequestParam("email") String email, @RequestParam("imagess") MultipartFile images, @Valid Owner owner,
+			@RequestParam("email") String email, @RequestParam("imagess") MultipartFile images,Model model,
+			@PathVariable int id ,@Valid Owner owner,
 			BindingResult result) {
 
 		log.info("processCreationForm=====process creation form initiatied");
@@ -146,10 +153,12 @@ class OwnerController {
 			System.out.println("changes");
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
-
+        
+          
 		log.info("owner details recieved with owner name:{}", firstname);
-		Owner owner1 = new Owner();
-		owner1.setFirstName(firstname);
+       Owner owner1=    this.owners.findById(id);
+		//Owner owner1 = new Owner();
+		//owner1.setFirstName(firstname);
 		owner1.setLastName(lastname);
 		owner1.setAddress(address);
 		owner1.setCity(city);
@@ -159,6 +168,23 @@ class OwnerController {
 		System.out.println("get file size" + images.getSize());
 
 		System.out.println("image content type" + images.getContentType());
+		/*try {
+			if(images.getOriginalFilename() {
+				if (images.getSize() < 1000000) {
+					owner1.setImages(images.getOriginalFilename());
+
+					images.transferTo(new File(filepath));
+					log.info("image stored successfully");
+				} else {
+
+					throw new ImageSizeException("Image size exceeded the maximum limit");
+
+				}
+			} else {
+
+				throw new InvalidFileException("This System accepts only .png Files");
+			}
+*/
 		try {
 			if (images.getContentType().endsWith("png")) {
 				if (images.getSize() < 1000000) {
@@ -182,8 +208,8 @@ class OwnerController {
 			log.info("Owner details added successfully with id{}", owner1.getId());
 
 			log.info("owner data saved successfully");
-		} catch (IllegalStateException | IOException e) {
-
+		} catch (IllegalStateException | IOException e){// | ImageSizeException  | InvalidFileException e) {
+            System.out.println( e.getMessage());
 			e.printStackTrace();
 		}
 

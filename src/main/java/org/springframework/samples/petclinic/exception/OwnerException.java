@@ -16,7 +16,7 @@ import org.springframework.web.context.request.WebRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
-@ControllerAdvice
+/*@ControllerAdvice
 public class OwnerException {
 
 	@ExceptionHandler(ConstraintViolationException.class)
@@ -38,4 +38,4 @@ public class OwnerException {
 		
 		
 }
-} 
+} */

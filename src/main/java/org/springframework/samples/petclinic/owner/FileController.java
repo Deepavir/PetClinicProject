@@ -13,6 +13,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.service.OwnerService;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,28 +68,37 @@ public class FileController {
 	 * ResponseEntity.status(HttpStatus.OK) .body(uploadImage); }
 	 */
 	// method to add owner object and image together .
-	/*
-	 * @PostMapping("/addowner") public String saveOwner(@RequestParam("file")
-	 * MultipartFile file,
-	 * 
-	 * @RequestParam("ownerData") String ownerData ){
-	 * System.out.println("file infor"+file.getOriginalFilename());
-	 * System.out.println("userdata"+ownerData); Owner owner = null;
-	 * 
-	 * try { owner = mapper.readValue(ownerData,Owner.class);
-	 * 
-	 * } catch (JsonProcessingException e1) { // TODO Auto-generated catch block
-	 * e1.printStackTrace(); } String fileName =
-	 * StringUtils.cleanPath(file.getOriginalFilename());
-	 * if(fileName.contains("..")) { System.out.println("not a a valid file"); } try
-	 * { //owner.setImages(Base64.getEncoder().encodeToString(file.getBytes())); }
-	 * catch (IOException e) { e.printStackTrace(); }
-	 * 
-	 * 
-	 * this.owners.save(owner); return "Owner added successfully";
-	 * 
-	 * }
-	 */
+
+	@PostMapping("/addowner")
+	public String saveOwner(@RequestParam("file") MultipartFile file,
+
+			@RequestParam("ownerData") String ownerData) {
+		System.out.println("file infor" + file.getOriginalFilename());
+		System.out.println("userdata" + ownerData);
+		Owner owner = null;
+
+		try {
+			owner = mapper.readValue(ownerData, Owner.class);
+
+		} catch (JsonProcessingException e1) { // TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+		if (fileName.contains("..")) {
+			System.out.println("not a a valid file");
+		}
+
+		try {
+			owner.setImages(Base64.getEncoder().encodeToString(file.getBytes()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		this.owners.save(owner);
+		return "Owner added successfully";
+
+	}
+
 	// method to read aboutus page
 	/**
 	 * @return
@@ -115,7 +126,7 @@ public class FileController {
 	 * @param page -This parameter provides page number of data to be displayed.
 	 * @return paginated data
 	 */
-	@Operation(summary="Get owner data",description="Get  owner data sorted by firstname",tags="Get")
+	@Operation(summary = "Get owner data", description = "Get  owner data sorted by firstname", tags = "Get")
 	@GetMapping("/owner/name/{page}/{pagesize}")
 	private Page<Owner> getAllOwnerSort(@PathVariable int page, @PathVariable int pagesize) {
 
@@ -131,7 +142,7 @@ public class FileController {
 	 * @param pagesize  -This parameter gets number of records to be displayed.
 	 * @return paginated data as per page and pagesize ,sorted by createddate.
 	 */
-	@Operation(summary="Get owner data",description="Get  owner data sorted by createddate",tags="Get")
+	@Operation(summary = "Get owner data", description = "Get  owner data sorted by createddate", tags = "Get")
 	@GetMapping("/owner/{page}/{pagesize}")
 	private Page<Owner> getAllOwnerByCreatedDate(@PathVariable int page, @PathVariable int pagesize) {
 		Pageable paging = PageRequest.of(page, pagesize);

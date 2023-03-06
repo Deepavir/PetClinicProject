@@ -22,7 +22,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -38,6 +38,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ImportRuntimeHints(PetClinicRuntimeHints.class)
 @EnableJpaAuditing
 @SpringBootApplication
+@EnableScheduling
 @OpenAPIDefinition(info = @Info(title = "PetCLINIC API", version = "2.0", description = "Petclinic Information"))
 public class PetClinicApplication {
 

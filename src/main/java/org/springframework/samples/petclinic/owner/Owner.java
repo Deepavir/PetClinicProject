@@ -30,6 +30,9 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.samples.petclinic.entity.Appointment;
+import org.springframework.samples.petclinic.entity.User;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -40,6 +43,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -65,6 +69,7 @@ import lombok.Setter;
  * @author Michael Isvy
  * @author Oliver Drotbohm
  */
+
 @Entity
 @Table(name = "owners")
 @Getter
@@ -87,12 +92,14 @@ public class Owner extends Person {
 	@NotEmpty
 	@Digits(fraction = 0, integer = 10)
 	private String telephone;
-
+	
+	
 	@Column(name = "email")
 	@Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", message = "Please enter a valid email")
 	private String email;
 
 	
+	private String password;
 	//@Pattern(regexp="[a-zA-Z0-9]+\\.png",message = "only png files allowed")
 	private String images;
 
@@ -108,7 +115,15 @@ public class Owner extends Person {
 	@LastModifiedDate
 	@Temporal(TemporalType.TIMESTAMP)
 	protected Date lastModifiedDate;
-
+	
+	private Date notifiedDate;
+	
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="owner_id")
+	private List<Appointment> appointment;
+	
+	
+	
 	public Pet addPet(Pet pet) {
 		if (pet.isNew()) {
 			getPets().add(pet);
@@ -123,6 +138,7 @@ public class Owner extends Person {
 	 * @return a pet if pet name is already in use
 	 */
 	public Pet getPet(String name) {
+		System.out.println("into getpet method"+name);
 		return getPet(name, false);
 	}
 
@@ -151,7 +167,9 @@ public class Owner extends Person {
 	 * @return a pet if pet name is already in use
 	 */
 	public Pet getPet(String name, boolean ignoreNew) {
+		System.out.println("into into getpet method"+name);
 		name = name.toLowerCase();
+		
 		for (Pet pet : getPets()) {
 			if (!ignoreNew || !pet.isNew()) {
 				String compName = pet.getName();
