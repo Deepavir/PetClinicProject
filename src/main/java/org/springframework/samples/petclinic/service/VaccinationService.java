@@ -55,6 +55,7 @@ public class VaccinationService {
 			Vaccination vaccine = this.vaccinrepo.findByVaccineName(vaccinename);
 
 			VaccineTimePeriod vtp = new VaccineTimePeriod();
+		
 
 			vtp.setStartDate(startdate);
 
@@ -62,15 +63,15 @@ public class VaccinationService {
 
 			if (isVaccineDataSaved) {
 
-			Set<Vaccination> v2= 	pet.getVaccinationdata();
-			v2.add(vaccine);
-				pet.setVaccinationdata(v2);
+		      vtp.setVaccination(vaccine);
 				this.petrepo.save(pet);
+				vtp.setPet(pet);
+				this.vtprepo.save(vtp);
 
 			}
 		}
 
-	}
+	} 
 
 	/**This method set endate and dates of vaccine shot as per provided start date from owner.
 	 * @param vaccine-to get vaccine data
@@ -123,7 +124,7 @@ public class VaccinationService {
 		// vaccine.setVaccineName("abcd");
 		// accine.setVolume(20);
 		this.vtprepo.save(vtp);
-	Set<VaccineTimePeriod> vtp2=  vaccine.getVaccineTimes();
+	List<VaccineTimePeriod> vtp2=  vaccine.getVaccineTimes();
 		vtp2.add(vtp);
 		
 		vaccine.setVaccineTimes(vtp2);

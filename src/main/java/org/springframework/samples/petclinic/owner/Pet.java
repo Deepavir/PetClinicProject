@@ -25,6 +25,7 @@ import org.aspectj.apache.bcel.ExceptionConstants;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.model.NamedEntity;
 import org.springframework.samples.petclinic.model.Vaccination;
+import org.springframework.samples.petclinic.model.VaccineTimePeriod;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -86,17 +87,22 @@ public class Pet extends NamedEntity {
 	@OrderBy("visit_date ASC")
 	private Set<Visit> visits = new LinkedHashSet<>();
 	
-    @ManyToMany(fetch = FetchType.EAGER)
-	private Set<Vaccination> vaccinationdata;
-    
-	public Set<Vaccination> getVaccinationdata() {
-		return vaccinationdata;
+  
+	
+	public List<VaccineTimePeriod> getVtp() {
+		return vtp;
 	}
 
 
-	public void setVaccinationdata(Set<Vaccination> vaccinationdata) {
-		this.vaccinationdata = vaccinationdata;
+	public void setVtp(List<VaccineTimePeriod> vtp) {
+		this.vtp = vtp;
 	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name ="pet_id")
+   private List<VaccineTimePeriod> vtp;
+
+
 
 
 	public void setBirthDate(LocalDate birthDate) {

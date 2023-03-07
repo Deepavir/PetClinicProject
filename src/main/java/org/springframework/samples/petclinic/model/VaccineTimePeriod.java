@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
+import org.springframework.samples.petclinic.owner.Pet;
 
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -36,5 +36,7 @@ public class VaccineTimePeriod {
 	private List<Date> vaccineDate = new ArrayList();
 	@ManyToOne(fetch=FetchType.EAGER)
 	private Vaccination vaccination;
+	@ManyToOne(fetch=FetchType.EAGER)
+	private Pet pet;
 
 }

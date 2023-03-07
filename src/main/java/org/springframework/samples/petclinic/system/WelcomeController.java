@@ -140,7 +140,9 @@ class WelcomeController {
 		          if(owner.getAddress().equals("dummy")) {
 		        	  return"redirect:/owners/new/"+owner.getId();
 		          }
+		          else {
 			return "redirect:/welcome";
+		          }
 			}
 		}
 		}

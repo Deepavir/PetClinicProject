@@ -20,8 +20,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -35,13 +35,14 @@ public class Vaccination {
 	private int numberOfShots;
 	private int volume;
 	private String unitOfMeasure;
-	@OneToMany(cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
 	@JoinColumn(name = "vaccination_id")
-	private Set<VaccineTimePeriod> vaccineTimes;
+	private List<VaccineTimePeriod> vaccineTimes;
 	
-	@ManyToMany(mappedBy = "vaccinationdata",fetch = FetchType.EAGER)
-	private List<Pet> pet;
+	
+	
+	}
 	
 	
 
-}
+
