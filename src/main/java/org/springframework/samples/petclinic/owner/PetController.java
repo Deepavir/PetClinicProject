@@ -123,13 +123,18 @@ class PetController {
 			@RequestParam("birthDate") LocalDate birthDate,
 			@RequestParam("type") PetType type,
 			@RequestParam("images") MultipartFile images , @Valid Pet pet1,BindingResult result, @PathVariable int ownerId
-	) throws IOException {
+	) {
 		if (result.hasErrors()) {
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		}
 		String filepath = ConstantProperty.PETFOLDERPATH+ File.separator+images.getOriginalFilename();
 		System.out.println("in method");
-		images.transferTo(new File(filepath));
+		try {
+			images.transferTo(new File(filepath));
+		} catch (IllegalStateException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
           Owner owner = this.ownerrepo.findById(ownerId);
           Pet pet = new Pet();
           pet.setName(name);

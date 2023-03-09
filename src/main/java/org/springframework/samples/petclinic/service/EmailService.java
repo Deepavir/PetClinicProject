@@ -188,7 +188,7 @@ public class EmailService {
 		return isMailSent;
 	}
 
-	// @Scheduled(cron = "0 0/2 * * * *")
+	
 	/**
 	 * This method scheduled to send reminder mail to owner if pet vaccination date
 	 * and current date difference is 2 days ,mail need to be sent.
@@ -219,7 +219,7 @@ public class EmailService {
 						log.info("get difference for date {} and diff is {}", vaccinedate1, diffInDays);
 						if (diffInDays == 2) {
 							log.info("mail sending  to owner {}", owner.getEmail());
-							String name = owner.getFirstName() +owner.getLastName();
+							String name = owner.getFirstName() + owner.getLastName();
 							boolean mailsent = sendReminderEmail(owner.getEmail(), name,pet.getName(),vaccinedate1); 
 
 						} else {

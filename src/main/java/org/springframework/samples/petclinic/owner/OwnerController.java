@@ -158,7 +158,7 @@ class OwnerController {
 		log.info("owner details recieved with owner name:{}", firstname);
        Owner owner1=    this.owners.findById(id);
 		//Owner owner1 = new Owner();
-		//owner1.setFirstName(firstname);
+		owner1.setFirstName(firstname);
 		owner1.setLastName(lastname);
 		owner1.setAddress(address);
 		owner1.setCity(city);
@@ -168,27 +168,12 @@ class OwnerController {
 		System.out.println("get file size" + images.getSize());
 
 		System.out.println("image content type" + images.getContentType());
-		/*try {
-			if(images.getOriginalFilename() {
-				if (images.getSize() < 1000000) {
-					owner1.setImages(images.getOriginalFilename());
-
-					images.transferTo(new File(filepath));
-					log.info("image stored successfully");
-				} else {
-
-					throw new ImageSizeException("Image size exceeded the maximum limit");
-
-				}
-			} else {
-
-				throw new InvalidFileException("This System accepts only .png Files");
-			}
-*/
+	
+		
 		try {
 			if (images.getContentType().endsWith("png")) {
 				if (images.getSize() < 1000000) {
-					owner1.setImages(images.getOriginalFilename());
+					//owner1.setImages(images.getOriginalFilename());
 
 					images.transferTo(new File(filepath));
 					log.info("image stored successfully");
@@ -212,7 +197,8 @@ class OwnerController {
             System.out.println( e.getMessage());
 			e.printStackTrace();
 		}
-
+		this.owners.save(owner1);
+		
 		return "redirect:/owners/" + owner1.getId();
 	}
 
