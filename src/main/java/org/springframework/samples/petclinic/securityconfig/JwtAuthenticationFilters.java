@@ -62,7 +62,7 @@ public class JwtAuthenticationFilters extends OncePerRequestFilter {
 		// validation
 		if (username != null) {
 			UserDetails userdetails = this.userservice.loadUserByUsername(username);
-			
+			System.out.println(userdetails.getAuthorities());
 			System.out.println("userdetails " + userdetails);
 			// validating  the token
 			if (this.jwtutil.validateToken(jwttoken, userdetails)) {
@@ -74,6 +74,7 @@ public class JwtAuthenticationFilters extends OncePerRequestFilter {
 				usernameauth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				//if user details are valid than setting it to securitycontext
 				SecurityContextHolder.getContext().setAuthentication(usernameauth);
+				System.out.println("authoritys"+ usernameauth.getAuthorities());
 			}
 		} else {
 			System.out.println("token is not valid");

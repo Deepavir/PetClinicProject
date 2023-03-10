@@ -3,16 +3,20 @@ package org.springframework.samples.petclinic.securityconfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.samples.petclinic.entity.UserPrincipal;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -51,10 +55,10 @@ public class WebSecurityConfig {
       http.cors().and().csrf().disable()
           .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
           .authorizeRequests()
-          .requestMatchers("/authenticate**","/**").permitAll()
-          .requestMatchers("/signup**").permitAll()
-          .requestMatchers("/owner/{page}/{pagesize}**").access("hasRole('ROLE_USER')")
-          .requestMatchers("/owner/name/{page}/{pagesize}**").access("hasRole('ROLE_ADMIN')")
+          .requestMatchers("/authenticate**","/**","/vaccine/{id}**").permitAll()
+          .requestMatchers("/signup**","/addowner**").permitAll()
+          .requestMatchers("/owner/{page}/{pagesize}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+          .requestMatchers("/owner/name/{page}/{pagesize}").access("hasRole('ROLE_ADMIN')")
           .anyRequest().authenticated()
           .and()
           .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
@@ -75,5 +79,6 @@ public class WebSecurityConfig {
                            .requestMatchers("/webjars/**")
                            .requestMatchers("/public");
     }
+   
     
 }

@@ -46,4 +46,5 @@ public class OwnerService {
 		Page<Owner> sortedlist = this.ownerepo.findAllByOrderByFirstNameAscCreatedDateAsc(paging);
 		return sortedlist;
 	}
+	
 }

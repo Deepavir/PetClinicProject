@@ -30,6 +30,10 @@ public class UserControllers {
 	@Autowired
 	private UserService userDetailsService;
 
+	/**This method helps to signup user 
+	 * @param user -user model accepts username and password for the user
+	 * @return message registration successfully done .
+	 */
 	@PostMapping("/signup")
 	public ResponseEntity saveUser(@RequestBody User user){
 		this.userDetailsService.saveUser(user);
@@ -38,6 +42,11 @@ public class UserControllers {
 	
 	
 	
+	/**This method authenticate the user and generate valid jwt token once authentication is successful.
+	 * @param authenticationRequest-accepts username and password and authenticate from database.
+	 * @return valid jwt token if request is accepted.
+	 * @throws Exception if invalid username and password is provided.
+	 */
 	@PostMapping("/authenticate")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 		System.out.println("createAuthenticationToken started");
@@ -45,13 +54,15 @@ public class UserControllers {
 			// authenticate username and password and than only will generate the token
 			System.out.println("authentication manager started");
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-					authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+					authenticationRequest.getUsername(), authenticationRequest.getPassword() ));
+			
 		} catch (DisabledException e) {
 			throw new Exception("USER_DISABLE", e);
 		} catch (BadCredentialsException e) {
 			throw new Exception("INVALID_CREDENTIALS", e);
 		}
          UserDetails userdetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+       System.out.println(  userdetails.getAuthorities());
 		final String token = jwtTokenUtil.generateToken(userdetails);
 
 		System.out.println("token " + token);
