@@ -3,6 +3,8 @@ package org.springframework.samples.petclinic.service;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -142,7 +144,7 @@ public class EmailService {
 
 	}
 
-	public boolean sendReminderEmail(String email ,String ownername,String petname ,Date  vaccinedate) {
+	public boolean sendReminderEmail(String email ,String ownername,String petname ,LocalDate  localDate) {
 		boolean isMailSent = false;
 		String to = email;
 		// variable for gmail host
@@ -161,7 +163,7 @@ public class EmailService {
 		// Step-1:to get session object
 		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("virmani.deepa@gmail.com", "mwgeibgrrrqsdvpw");
+				return new PasswordAuthentication("virmani.deepa@gmail.com", "jlmywfblzvpfshga");
 			}
 		});
 		session.setDebug(true);
@@ -175,7 +177,7 @@ public class EmailService {
 			// adding subject to message
 			msg.setSubject("Appointment Reminder");
 			// adding text
-			msg.setContent(ConstantProperty.getMailBodyFirstPart(email, vaccinedate,petname,ownername),"text/html");  
+			msg.setContent(ConstantProperty.getMailBodyFirstPart(email, localDate,petname,ownername),"text/html");  
 			// send the message using transport class
 			Transport.send(msg);
 			System.out.println("sent successfully");
@@ -211,16 +213,26 @@ public class EmailService {
 					for (Date vaccinedate1 : vaccinedate) {
 						
 						log.info("vaccinedate is {}", vaccinedate1);
+						LocalDateTime ldt = LocalDateTime.ofInstant(vaccinedate1.toInstant(),
+                                ZoneId.systemDefault());
+						log.info("ldt value {}",ldt.getHour());
+                      LocalDateTime date1 = LocalDateTime.of(ldt.getYear(),ldt.getMonth(),ldt.getDayOfMonth(),ldt.getHour(),
+                    		  ldt.getMinute(),ldt.getSecond());
+                      LocalDateTime currentdate = LocalDateTime.now();
+                      //setting timing to start of day using localtime.MIN
+                      LocalDateTime ldt1 = LocalDateTime.of(date1.toLocalDate(), LocalTime.MIN);
+                      LocalDateTime ldt2 = LocalDateTime.of(currentdate.toLocalDate(), LocalTime.MIN);
+                      long diffDays = ChronoUnit.DAYS.between(ldt2, ldt1);
+						log.info("vaccine date timing are {}",vaccinedate1.getHours() ,vaccinedate1.getMinutes());
+					
+					 
+						
 
-						Date currentdate = new Date();
-						long diffInMillies = Math.abs(vaccinedate1.getTime() - currentdate.getTime());
-						long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-
-						log.info("get difference for date {} and diff is {}", vaccinedate1, diffInDays);
-						if (diffInDays == 2) {
+						log.info("get difference for date {} and diff is {}", vaccinedate1, diffDays);
+						if (diffDays == 2) {
 							log.info("mail sending  to owner {}", owner.getEmail());
 							String name = owner.getFirstName() + owner.getLastName();
-							boolean mailsent = sendReminderEmail(owner.getEmail(), name,pet.getName(),vaccinedate1); 
+							boolean mailsent = sendReminderEmail(owner.getEmail(), name,pet.getName(),ldt1.toLocalDate()); 
 
 						} else {
 							log.info("mail not sent.day difference is not 2");
