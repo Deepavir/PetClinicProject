@@ -47,6 +47,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -177,19 +178,12 @@ class OwnerController {
 
 					images.transferTo(new File(filepath));
 					log.info("image stored successfully");
-				} else {
-
-					throw new ImageSizeException("Image size exceeded the maximum limit");
-
-				}
-			} else {
-
-				throw new InvalidFileException("This System accepts only .png Files");
-			}
+				
 
 			owner1.setImages(images.getOriginalFilename());
-
-			this.owners.save(owner1);
+				}
+			}
+			//this.owners.save(owner1);
 			log.info("Owner details added successfully with id{}", owner1.getId());
 
 			log.info("owner data saved successfully");
@@ -197,9 +191,29 @@ class OwnerController {
             System.out.println( e.getMessage());
 			e.printStackTrace();
 		}
+		catch(InvalidFileException ex) {
+			
+				log.error("InvalidFileException: " + ex.getMessage());
+			model.addAttribute("error", ex.getMessage());
+			log.info(ex.getMessage());
+			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+			
+		}catch(ImageSizeException ex) {
+			
+				log.error("ImageSizeException: " + ex.getMessage());
+			model.addAttribute("error", ex.getMessage());
+			log.info(ex.getMessage());
+			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+			
+		}
+		
+		
+		
 		this.owners.save(owner1);
 		
 		return "redirect:/owners/" + owner1.getId();
+		
+		
 	}
 
 	@GetMapping("/owners/find")
